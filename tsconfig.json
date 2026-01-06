@@ -15,6 +15,13 @@
     "incremental": true,
     "skipLibCheck": true,
     "baseUrl": "./",
-    "paths": {}
+    "paths": {
+      "@app/common": [
+        "libs/common/src"
+      ],
+      "@app/common/*": [
+        "libs/common/src/*"
+      ]
+    }
   }
 }

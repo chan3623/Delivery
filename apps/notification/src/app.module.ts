@@ -1,24 +1,19 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 import Joi from 'joi';
-import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
-    PaymentModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
         DB_URL: Joi.string().required(),
       }),
     }),
-    TypeOrmModule.forRootAsync({
+    MongooseModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.getOrThrow<string>('DB_URL'),
-        autoLoadEntities: true,
-        synchronize: true,
+        uri: configService.getOrThrow<string>('DB_URL'),
       }),
       inject: [ConfigService],
     }),

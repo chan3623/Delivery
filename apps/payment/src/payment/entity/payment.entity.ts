@@ -36,10 +36,10 @@ export class Payment {
   cardNumber: string;
 
   @Column()
-  expireYear: string;
+  expiryYear: string;
 
   @Column()
-  expireMonth: string;
+  expiryMonth: string;
 
   @Column()
   birthOrRegistration: string;
