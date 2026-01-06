@@ -1,5 +1,7 @@
+import { NOTIFICATION_SERVICE } from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import Joi from 'joi';
 import { PaymentModule } from './payment/payment.module';
@@ -11,6 +13,8 @@ import { PaymentModule } from './payment/payment.module';
       isGlobal: true,
       validationSchema: Joi.object({
         DB_URL: Joi.string().required(),
+        NOTIFICATION_HOST: Joi.string().required(),
+        NOTIFICATION_TCP_PORT: Joi.number().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -21,6 +25,22 @@ import { PaymentModule } from './payment/payment.module';
         synchronize: true,
       }),
       inject: [ConfigService],
+    }),
+    ClientsModule.registerAsync({
+      clients: [
+        {
+          name: NOTIFICATION_SERVICE,
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.TCP,
+            options: {
+              host: configService.getOrThrow<string>('NOTIFICATION_HOST'),
+              port: configService.getOrThrow<number>('NOTIFICATION_TCP_PORT'),
+            },
+          }),
+          inject: [ConfigService],
+        },
+      ],
+      isGlobal: true,
     }),
   ],
 })

@@ -1,4 +1,4 @@
-import { RpcInterceptor } from '@app/common/const/interceptor/rpc.interceptor';
+import { RpcInterceptor } from '@app/common/interceptor/rpc.interceptor';
 import {
   Controller,
   UseInterceptors,

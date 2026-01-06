@@ -12,6 +12,7 @@ import { OrderModule } from './order/order.module';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
+        TCP_PORT: Joi.number().required(),
         HTTP_PORT: Joi.number().required(),
         USER_HOST: Joi.string().required(),
         USER_TCP_PORT: Joi.number().required(),

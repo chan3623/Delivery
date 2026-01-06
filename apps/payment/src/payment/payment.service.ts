@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { NOTIFICATION_SERVICE } from '@app/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
+import { lastValueFrom } from 'rxjs';
 import { Repository } from 'typeorm';
 import { MakePaymentDto } from './dto/make-payment.dto';
 import { Payment, PaymentStatus } from './entity/payment.entity';
@@ -9,6 +12,8 @@ export class PaymentService {
   constructor(
     @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
+    @Inject(NOTIFICATION_SERVICE)
+    private readonly notificationService: ClientProxy,
   ) {}
 
   async makePayment(payload: MakePaymentDto) {
@@ -23,6 +28,7 @@ export class PaymentService {
       await this.updatePaymentStatus(paymentId, PaymentStatus.approved);
 
       // notification 보내기(나중에 하기)
+      this.sendNotification(payload.orderId, payload.userEmail);
 
       return await this.paymentRepository.findOneBy({ id: paymentId });
     } catch (e) {
@@ -40,5 +46,14 @@ export class PaymentService {
 
   async updatePaymentStatus(id: string, status: PaymentStatus) {
     await this.paymentRepository.update({ id }, { paymentStatus: status });
+  }
+
+  async sendNotification(orderId: string, to: string) {
+    const resp = await lastValueFrom(
+      this.notificationService.send(
+        { cmd: 'send_payment_notification' },
+        { to, orderId },
+      ),
+    );
   }
 }
