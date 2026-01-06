@@ -13,4 +13,4 @@ RUN npm i
 COPY . .
 
 # 커멘드 실행
-CMD ["npm", "run", "start:dev", "user"]
+CMD ["npm", "run", "start:dev", "product"]
