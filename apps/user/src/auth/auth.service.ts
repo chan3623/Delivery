@@ -44,7 +44,6 @@ export class AuthService {
     }
 
     const decoded = Buffer.from(token, 'base64').toString('utf-8');
-    console.log('decoded : ', decoded);
     // username:password
     const tokenSplit = decoded.split(':');
 
