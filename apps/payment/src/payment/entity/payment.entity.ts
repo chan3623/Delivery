@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum PaymentStatus {
   pending = 'Pending',
@@ -18,6 +18,7 @@ export enum NotificationStatus {
 
 @Entity()
 export class Payment {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
