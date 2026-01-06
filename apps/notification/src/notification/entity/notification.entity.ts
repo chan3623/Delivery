@@ -1,4 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 export enum NotificationStatus {
   pending,

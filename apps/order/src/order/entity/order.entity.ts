@@ -25,7 +25,7 @@ export class Order extends Document {
   customer: Customer;
 
   @Prop({
-    type: ProductSchema,
+    type: [ProductSchema],
     required: true,
   })
   products: Product[];
