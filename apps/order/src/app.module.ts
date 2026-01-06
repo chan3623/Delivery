@@ -1,4 +1,4 @@
-import { USER_SERVICE } from '@app/common';
+import { PRODUCT_SERVICE, USER_SERVICE } from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -33,6 +33,17 @@ import { OrderModule } from './order/order.module';
             options: {
               host: configService.getOrThrow<string>('USER_HOST'),
               port: configService.getOrThrow<number>('USER_TCP_PORT'),
+            },
+          }),
+          inject: [ConfigService],
+        },
+        {
+          name: PRODUCT_SERVICE,
+          useFactory: (configService: ConfigService) => ({
+            transport: Transport.TCP,
+            options: {
+              host: configService.getOrThrow<string>('PRODUCT_HOST'),
+              port: configService.getOrThrow<number>('PRODUCT_TCP_PORT'),
             },
           }),
           inject: [ConfigService],
