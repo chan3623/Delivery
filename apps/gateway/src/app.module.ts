@@ -1,8 +1,16 @@
-import { ORDER_SERVICE, PRODUCT_SERVICE, USER_SERVICE } from '@app/common';
+import {
+  ORDER_SERVICE,
+  OrderMicroservice,
+  PRODUCT_SERVICE,
+  ProductMicroservice,
+  USER_SERVICE,
+  UserMicroservice,
+} from '@app/common';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import Joi from 'joi';
+import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
 import { OrderModule } from './order/order.module';
@@ -30,13 +38,11 @@ import { ProductModule } from './product/product.module';
         {
           name: USER_SERVICE,
           useFactory: (configService: ConfigService) => ({
-            transport: Transport.RMQ,
+            transport: Transport.GRPC,
             options: {
-              urls: ['amqp://rabbitmq:5672'],
-              queue: 'user_queue',
-              queueOptions: {
-                durable: false,
-              },
+              package: UserMicroservice.protobufPackage,
+              protoPath: join(process.cwd(), 'proto/user.proto'),
+              url: configService.getOrThrow<string>('USER_GRPC_URL'),
             },
           }),
           inject: [ConfigService],
@@ -44,13 +50,11 @@ import { ProductModule } from './product/product.module';
         {
           name: PRODUCT_SERVICE,
           useFactory: (configService: ConfigService) => ({
-            transport: Transport.RMQ,
+            transport: Transport.GRPC,
             options: {
-              urls: ['amqp://rabbitmq:5672'],
-              queue: 'product_queue',
-              queueOptions: {
-                durable: false,
-              },
+              package: ProductMicroservice.protobufPackage,
+              protoPath: join(process.cwd(), 'proto/product.proto'),
+              url: configService.getOrThrow<string>('PRODUCT_GRPC_URL'),
             },
           }),
           inject: [ConfigService],
@@ -58,13 +62,11 @@ import { ProductModule } from './product/product.module';
         {
           name: ORDER_SERVICE,
           useFactory: (configService: ConfigService) => ({
-            transport: Transport.RMQ,
+            transport: Transport.GRPC,
             options: {
-              urls: ['amqp://rabbitmq:5672'],
-              queue: 'order_queue',
-              queueOptions: {
-                durable: false,
-              },
+              package: OrderMicroservice.protobufPackage,
+              protoPath: join(process.cwd(), 'proto/order.proto'),
+              url: configService.getOrThrow<string>('ORDER_GRPC_URL'),
             },
           }),
           inject: [ConfigService],

@@ -21,19 +21,19 @@ export interface SendPaymentNotificationResponse {
   to: string;
   subject: string;
   content: string;
-  notificationStatus: string;
+  status: string;
 }
 
 export const PAYMENT_PACKAGE_NAME = "payment";
 
-export interface NotificationClient {
+export interface NotificationServiceClient {
   sendPaymentNotification(
     request: SendPaymentNotificationRequest,
     metadata?: Metadata,
   ): Observable<SendPaymentNotificationResponse>;
 }
 
-export interface NotificationController {
+export interface NotificationServiceController {
   sendPaymentNotification(
     request: SendPaymentNotificationRequest,
     metadata?: Metadata,
@@ -43,19 +43,19 @@ export interface NotificationController {
     | SendPaymentNotificationResponse;
 }
 
-export function NotificationControllerMethods() {
+export function NotificationServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = ["sendPaymentNotification"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("Notification", method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod("NotificationService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("Notification", method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod("NotificationService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const NOTIFICATION_SERVICE_NAME = "Notification";
+export const NOTIFICATION_SERVICE_NAME = "NotificationService";
