@@ -5,9 +5,9 @@ package user;
 service AuthService{
     rpc ParseBearerToken(ParseBearerTokenRequest) returns (ParseBearerTokenResponse);
 
-    rpc RegisterUser(RegisterUserRequest) returns(RegisterUserResponse)
+    rpc RegisterUser(RegisterUserRequest) returns(RegisterUserResponse);
 
-    rpc LoginUser(LoginUserRequest) returns (LoginUserResponse)
+    rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
 }
 
 message ParseBearerTokenRequest{
