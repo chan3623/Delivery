@@ -1,12 +1,14 @@
-import { OrderMicroservice } from '@app/common';
-import { Controller } from '@nestjs/common';
+import { GrpcInterceptor, OrderMicroservice } from '@app/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 
+import { Metadata } from '@grpc/grpc-js';
 import { OrderStatus } from './entity/order.entity';
 import { PaymentMethod } from './entity/payment.entity';
 import { OrderService } from './order.service';
 
 @Controller('order')
 @OrderMicroservice.OrderServiceControllerMethods()
+@UseInterceptors(GrpcInterceptor)
 export class OrderController
   implements OrderMicroservice.OrderServiceController
 {
@@ -19,13 +21,19 @@ export class OrderController
     );
   }
 
-  async createOrder(request: OrderMicroservice.CreateOrderRequest) {
-    return this.orderService.createOrder({
-      ...request,
-      payment: {
-        ...request.payment,
-        paymentMethod: request.payment.paymentMethod as PaymentMethod,
+  async createOrder(
+    request: OrderMicroservice.CreateOrderRequest,
+    metadata: Metadata,
+  ) {
+    return this.orderService.createOrder(
+      {
+        ...request,
+        payment: {
+          ...request.payment,
+          paymentMethod: request.payment.paymentMethod as PaymentMethod,
+        },
       },
-    });
+      metadata,
+    );
   }
 }

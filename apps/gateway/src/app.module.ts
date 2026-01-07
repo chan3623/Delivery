@@ -6,6 +6,7 @@ import {
   USER_SERVICE,
   UserMicroservice,
 } from '@app/common';
+import { traceInterceptor } from '@app/common/grpc/interceptor';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -40,6 +41,9 @@ import { ProductModule } from './product/product.module';
           useFactory: (configService: ConfigService) => ({
             transport: Transport.GRPC,
             options: {
+              channelOptions: {
+                interceptors: [traceInterceptor('Gateway')],
+              },
               package: UserMicroservice.protobufPackage,
               protoPath: join(process.cwd(), 'proto/user.proto'),
               url: configService.getOrThrow<string>('USER_GRPC_URL'),
@@ -52,6 +56,9 @@ import { ProductModule } from './product/product.module';
           useFactory: (configService: ConfigService) => ({
             transport: Transport.GRPC,
             options: {
+              channelOptions: {
+                interceptors: [traceInterceptor('Gateway')],
+              },
               package: ProductMicroservice.protobufPackage,
               protoPath: join(process.cwd(), 'proto/product.proto'),
               url: configService.getOrThrow<string>('PRODUCT_GRPC_URL'),
@@ -64,6 +71,9 @@ import { ProductModule } from './product/product.module';
           useFactory: (configService: ConfigService) => ({
             transport: Transport.GRPC,
             options: {
+              channelOptions: {
+                interceptors: [traceInterceptor('Gateway')],
+              },
               package: OrderMicroservice.protobufPackage,
               protoPath: join(process.cwd(), 'proto/order.proto'),
               url: configService.getOrThrow<string>('ORDER_GRPC_URL'),

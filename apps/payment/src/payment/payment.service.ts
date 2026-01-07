@@ -1,4 +1,9 @@
-import { NOTIFICATION_SERVICE, NotificationMicroservice } from '@app/common';
+import {
+  constructorMetadata,
+  NOTIFICATION_SERVICE,
+  NotificationMicroservice,
+} from '@app/common';
+import { Metadata } from '@grpc/grpc-js';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -26,7 +31,7 @@ export class PaymentService implements OnModuleInit {
       );
   }
 
-  async makePayment(payload: MakePaymentDto) {
+  async makePayment(payload: MakePaymentDto, metadata: Metadata) {
     let paymentId: string;
     try {
       const result = await this.paymentRepository.save(payload);
@@ -38,7 +43,7 @@ export class PaymentService implements OnModuleInit {
       await this.updatePaymentStatus(paymentId, PaymentStatus.approved);
 
       // notification 보내기(나중에 하기)
-      this.sendNotification(payload.orderId, payload.userEmail);
+      this.sendNotification(payload.orderId, payload.userEmail, metadata);
 
       return await this.paymentRepository.findOneBy({ id: paymentId });
     } catch (e) {
@@ -58,9 +63,12 @@ export class PaymentService implements OnModuleInit {
     await this.paymentRepository.update({ id }, { paymentStatus: status });
   }
 
-  async sendNotification(orderId: string, to: string) {
+  async sendNotification(orderId: string, to: string, metadata: Metadata) {
     const resp = await lastValueFrom(
-      this.notificationService.sendPaymentNotification({ to, orderId }),
+      this.notificationService.sendPaymentNotification(
+        { to, orderId },
+        constructorMetadata(PaymentService.name, 'sendNotification', metadata),
+      ),
     );
   }
 }

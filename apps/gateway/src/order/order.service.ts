@@ -1,4 +1,9 @@
-import { ORDER_SERVICE, OrderMicroservice, UserPayloadDto } from '@app/common';
+import {
+  constructorMetadata,
+  ORDER_SERVICE,
+  OrderMicroservice,
+  UserPayloadDto,
+} from '@app/common';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -20,9 +25,12 @@ export class OrderService implements OnModuleInit {
   }
 
   createOrder(createOrderDto: CreateOrderDto, userPayload: UserPayloadDto) {
-    return this.orderService.createOrder({
-      ...createOrderDto,
-      meta: { user: userPayload },
-    });
+    return this.orderService.createOrder(
+      {
+        ...createOrderDto,
+        meta: { user: userPayload },
+      },
+      constructorMetadata(OrderService.name, 'createOrder'),
+    );
   }
 }

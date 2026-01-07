@@ -1,4 +1,8 @@
-import { ORDER_SERVICE, OrderMicroservice } from '@app/common';
+import {
+  ORDER_SERVICE,
+  OrderMicroservice,
+  traceInterceptor,
+} from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
@@ -31,6 +35,9 @@ import { NotificationModule } from './notification/notification.module';
           useFactory: (configService: ConfigService) => ({
             transport: Transport.GRPC,
             options: {
+              channelOptions: {
+                interceptors: [traceInterceptor('Notification')],
+              },
               package: OrderMicroservice.protobufPackage,
               protoPath: join(process.cwd(), 'proto/order.proto'),
               url: configService.getOrThrow<string>('ORDER_GRPC_URL'),
