@@ -24,9 +24,9 @@ jobs:
 
       - name: Build And Push Docker Image
         run: |
-          docker build build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-gateway:latest -t chn3623/nestjs-gateway:${{github.sha}} -f ./apps/gateway/Dockerfile --target product --push .
-          docker build build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-notification:latest -t chn3623/nestjs-notification:${{github.sha}} -f ./apps/notification/Dockerfile --target product --push .
-          docker build build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-order:latest -t chn3623/nestjs-order:${{github.sha}} -f ./apps/order/Dockerfile --target product --push .
-          docker build build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-payment:latest -t chn3623/nestjs-payment:${{github.sha}} -f ./apps/payment/Dockerfile --target product --push .
-          docker build build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-product:latest -t chn3623/nestjs-product:${{github.sha}} -f ./apps/product/Dockerfile --target product --push .
-          docker build build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-user:latest -t chn3623/nestjs-user:${{github.sha}} -f ./apps/user/Dockerfile --target product --push .
+          docker buildx build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-gateway:latest -t chn3623/nestjs-gateway:${{github.sha}} -f ./apps/gateway/Dockerfile --target product --push .
+          docker buildx build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-notification:latest -t chn3623/nestjs-notification:${{github.sha}} -f ./apps/notification/Dockerfile --target product --push .
+          docker buildx build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-order:latest -t chn3623/nestjs-order:${{github.sha}} -f ./apps/order/Dockerfile --target product --push .
+          docker buildx build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-payment:latest -t chn3623/nestjs-payment:${{github.sha}} -f ./apps/payment/Dockerfile --target product --push .
+          docker buildx build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-product:latest -t chn3623/nestjs-product:${{github.sha}} -f ./apps/product/Dockerfile --target product --push .
+          docker buildx build --platform linux/amd64, linux/arm64 -t chn3623/nestjs-user:latest -t chn3623/nestjs-user:${{github.sha}} -f ./apps/user/Dockerfile --target product --push .
